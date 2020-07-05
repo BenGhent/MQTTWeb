@@ -60,9 +60,14 @@ THis is created so that people can monitor their MQTT server and do it in a sing
           <div id="SSSInput">
 
             <h4>Sprinkler System</h4>
-            <button id="Pause" onclick="Send1('pause', 'home/command/irrigation')" class="w3-button w3-small">Pause</button> <button id="resume" onclick="Send1('resume', 'home/command/irrigation')" class="w3-button w3-small">Resume</button> <button id="cancel" onclick="Send1('cancel', 'home/command/irrigation')" class="w3-button w3-small">Cancel</button><br>
+            <button id="Pause" onclick="Send1('pause', 'home/command/irrigation')" class="w3-button w3-small">Pause</button> 
+	    <button id="resume" onclick="Send1('resume', 'home/command/irrigation')" class="w3-button w3-small">Resume</button>
+	    <button id="cancel" onclick="Send1('cancel', 'home/command/irrigation')" class="w3-button w3-small">Cancel</button>
+	    <br>
             <br>
-            <input type="number" id="NInputTxt" min="1" max="16" name="test" value="1" class="w3-black"></input> <button id="SSZoneBtn" name="Btn" onclick="Send(true,'23456','NInputTxt')" class="w3-button w3-small">Send</button> <button id="SSZoneBtn" name="Btn" onclick="Send1('AllOff', 'home/command/irrigation/zone')" class="w3-button w3-small">ALLOFF</button>
+            <input type="number" id="NInputTxt" min="1" max="16" name="test" value="1" class="w3-black"></input> 
+	    <button id="SSZoneBtn" name="Btn" onclick="Send(true,'23456','NInputTxt')" class="w3-button w3-small">Send</button> 
+	    <button id="SSZoneBtn" name="Btn" onclick="Send1('AllOff', 'home/command/irrigation/zone/1')" class="w3-button w3-small">ALLOFF</button>
 
           </div>
 
@@ -106,19 +111,22 @@ THis is created so that people can monitor their MQTT server and do it in a sing
             }
           }
 
-          init(18);
+          init(19);
 
           //init(18);
 
-          function SSZone(message){//
-
-            var res = message.split(";");
-            if(res[1]=="on"||res[1]=="ON"){
-              document.getElementById("ps"+res[0]).innerHTML = "On";
-              document.getElementById("ps"+res[0]).style = "color:red";
-            }else if (res[1]=="off"||res[1]=="Off") {
-              document.getElementById("ps"+res[0]).innerHTML = "Off";
-              document.getElementById("ps"+res[0]).style = "color:green";
+          function SSZone(message,topic){//
+		console.log("topic: " + topic);
+            var zn = topic.split("/");
+	    	console.log("zone number: " + zn[4]);
+		console.log("message: " + message);
+            // home/state/irrigation/zone/1
+	    if(message=="on"|message=="ON"){
+              document.getElementById("ps"+zn[4]).innerHTML = "On";
+              document.getElementById("ps"+zn[4]).style = "color:red";
+            }else if (message=="off"||message=="OFF") {
+              document.getElementById("ps"+zn[4]).innerHTML = "Off";
+              document.getElementById("ps"+zn[4]).style = "color:green";
             }
           }
           function zone_switch(zone, on_off){
@@ -126,7 +134,7 @@ THis is created so that people can monitor their MQTT server and do it in a sing
             if(on_off=="on"||on_off=="ON"){
               document.getElementById("ps"+zone).innerHTML = "On";
               document.getElementById("ps"+zone).style = "color:red";
-            }else if (on_off=="off"||on_off=="Off") {
+            }else if (on_off=="off"||on_off=="OFF") {
               document.getElementById("ps"+zone).innerHTML = "Off";
               document.getElementById("ps"+zone).style = "color:green";
             }
@@ -151,15 +159,15 @@ THis is created so that people can monitor their MQTT server and do it in a sing
                 var Zone = document.getElementById("ps"+i).innerHTML;
                 if(Zone=="on"||Zone=="On"){
                   //console.log("hi");
-                  message = new Paho.MQTT.Message(i+";OFF");
-                  message.destinationName = "home/command/irrigation/zone";
+                  message = new Paho.MQTT.Message("OFF");
+                  message.destinationName = "home/command/irrigation/zone/"+i;
                   //console.log(message.payloadString);
                   client.send(message);
                   //console.log("Sent");
                 }else if(Zone=="off"||Zone=="Off"){
                   //console.log("off");
-                  message = new Paho.MQTT.Message(i+";ON");
-                  message.destinationName = "home/command/irrigation/zone";
+                  message = new Paho.MQTT.Message("ON");
+                  message.destinationName = "home/command/irrigation/zone/"+i;
                   //console.log(message.payloadString);
                   client.send(message);
                   //console.log("Sent ON");
@@ -176,15 +184,15 @@ THis is created so that people can monitor their MQTT server and do it in a sing
               var Zone = document.getElementById("ps"+i).innerHTML;
               if(Zone=="on"||Zone=="On"){
                 //console.log("hi");
-                message = new Paho.MQTT.Message(i+";OFF");
-                message.destinationName = "home/command/irrigation/zone";
+                message = new Paho.MQTT.Message("OFF");
+                message.destinationName = "home/command/irrigation/zone/"+i;
                 //console.log(message.payloadString);
                 client.send(message);
                 //console.log("Sent");
               }else if(Zone=="off"||Zone=="Off"){
                 //console.log("off");
-                message = new Paho.MQTT.Message(i+";ON");
-                message.destinationName = "home/command/irrigation/zone";
+                message = new Paho.MQTT.Message("ON");
+                message.destinationName = "home/command/irrigation/zone/"+i;
                 //console.log(message.payloadString);
                 client.send(message);
                 //console.log("Sent ON");
@@ -356,12 +364,16 @@ THis is created so that people can monitor their MQTT server and do it in a sing
     function onMessageArrived(message) {//called when the message arrivs
       //console.log("MessageArrived:"+message.payloadString +"_"+message.destinationName);
       //client.disconnect();
+      
+	if(message.destinationName.includes("home/state/irrigation/zone/")){
+		SSZone(message.payloadString,message.destinationName);
+	}
       switch (message.destinationName) {
         case s.ZoneCommand:
           //SSZone(message.payloadString);
           break;
         case s.ZoneState:
-          SSZone(message.payloadString);
+//          SSZone(message.payloadString,message.destinationName); //replaced by jon 6/5/20 with the if statement just above the switch statement in order to accomodate the new zone hierarchy
           break;
         case s.state:
           SSPump(message.payloadString,"status");
@@ -405,10 +417,11 @@ THis is created so that people can monitor their MQTT server and do it in a sing
 
     }
 
-    setInterval(function() {
+	//commented setInterval because client.isconnected is not a valid call to client - jg 6/5/2020
+    //setInterval(function() {
       // This will be executed every 5 seconds
-      console.log(client.isconnected());
-    }, 5000); // 5000 milliseconds
+      //console.log(client.isconnected());
+    //}, 5000); // 5000 milliseconds
 
   </script>
   <script>
