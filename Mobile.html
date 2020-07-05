@@ -1,0 +1,443 @@
+<!--
+
+THis is created so that people can monitor their MQTT server and do it in a singular place.
+
+-->
+
+<!DOCTYPEhtml>
+<html>
+
+  <head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" type="text/css" href="code/css/main.css"> -->
+    <link rel="stylesheet" type="text/css" href="Code/CSS/W3.css">
+    <link rel="stylesheet" type="text/css" href="Code/CSS/W3-image.css">
+    <title> Home Page </title>
+
+  </head>
+
+  <body class="w3-black">
+
+
+    <div class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left" style="width:130px" style="display:none;z-index:5" id="mySidebar">
+      <button class="w3-bar-item w3-button" onclick="w3_close()">Close</button>
+      <h5 class="w3-bar-item">IoT</h5>
+      <a id="initbtn" class="w3-bar-item w3-button tablink" onclick="openLink(event,'init')" href="#init">Init</a>
+      <a id="SprinklerSystembtn" class="w3-bar-item w3-button tablink" onclick="openLink(event, 'SprinklerSystem')" href="#SS" >SS</a>
+      <a id="Airbtn" class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Air')" href="#Air">Air Conditioning</a>
+    </div>
+
+    <div>
+
+
+      <button class="w3-button w3-xxlarge" onclick="w3_open()">&#9776;</button>
+
+
+      <div id="init" class="w3-container city w3-animate-opacity" style="display:block">
+
+        <!-- <h3>This is the Ghent household IoT webpage</h3> -->
+        <h3>This is the Ghent family IoT webpage to control our house</h3>
+        <p>Clients connected = <span id="clientsW"></span></p>
+
+        <script>
+
+          function init(){
+
+          }
+
+        </script>
+
+      </div>
+
+      <div id="SprinklerSystem" class="w3-container city w3-animate-opacity" style="display:none">
+
+        <div id="SSHeader">
+
+          <p id="SSSystem"></p>
+          <p id="SSPumpPres"></p>
+          <p id="SSPumpStatus">Pump State = <span id="PumpS:status"></span></p>
+          <p id="SSPumpCurrent">Pump Current = <span id="PumpS:current"</span></p>
+          <p id="SSPumpPres">Pump Pressure = <span id="PumpS:pres"></span></p>
+
+        </div>
+        <div id="SSSprinklers">
+
+          <div id="SSSInput">
+
+            <h4>Sprinkler System</h4>
+            <button id="Pause" onclick="Send1('pause', 'home/command/irrigation')" class="w3-button w3-small">Pause</button> <button id="resume" onclick="Send1('resume', 'home/command/irrigation')" class="w3-button w3-small">Resume</button> <button id="cancel" onclick="Send1('cancel', 'home/command/irrigation')" class="w3-button w3-small">Cancel</button><br>
+            <br>
+            <input type="number" id="NInputTxt" min="1" max="16" name="test" value="1" class="w3-black"></input> <button id="SSZoneBtn" name="Btn" onclick="Send(true,'23456','NInputTxt')" class="w3-button w3-small">Send</button> <button id="SSZoneBtn" name="Btn" onclick="Send1('AllOff', 'home/command/irrigation/zone')" class="w3-button w3-small">ALLOFF</button>
+
+          </div>
+
+          <div id="SSSprinklers">
+
+            <p id="T"></p>
+
+          </div>
+
+        </div>
+
+        <script id="SSs">
+
+          var xmlhttp = new XMLHttpRequest();
+          var myObj;// = JSON.parse(this.responseText);
+          var getZoneTimes;
+          xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              myObj = JSON.parse(this.responseText);
+
+              getZoneTimes = function(zone){
+                for(var i = 0; i<=myObj.sequences[0].sequence.length; i++){
+                  if(myObj.sequences[0].sequence[i].zone == zone){
+                    return myObj.sequences[0].sequence[i].time;
+                  }
+                }
+                return 0;
+              }
+
+              init(18);
+
+            }
+          }
+          xmlhttp.open("GET", "Code/JSON/config.json", true);
+          xmlhttp.send();
+
+          function init(num){
+            for(i=1;i<=num;i++){
+              document.getElementById("T").innerHTML = document.getElementById("T").innerHTML +"<p id='p'"+i+" onclick='text_Send("+i+")' style='width:165px'>Zone "+i+":<span id=ps"+i+" style=color:green>Off</span></p>";
+              //document.getElementById("ps_t"+i).innerHTML = getZoneTimes(i);
+            }
+          }
+
+          //init(18);
+
+          function SSZone(message){//
+
+            var res = message.split(";");
+            if(res[1]=="on"||res[1]=="ON"){
+              document.getElementById("ps"+res[0]).innerHTML = "On";
+              document.getElementById("ps"+res[0]).style = "color:red";
+              if(TF==true){
+
+              }
+            }else if (res[1]=="off"||res[1]=="OFF") {
+              document.getElementById("ps"+res[0]).innerHTML = "Off";
+              document.getElementById("ps"+res[0]).style = "color:green";
+            }
+          }
+
+            function SSPump(message,w){//this deals with everything dealing with the pump
+
+              document.getElementById("PumpS:"+w).innerHTML = message;
+
+            }
+
+            function Send1(mes, topic){
+              message = new Paho.MQTT.Message(mes);
+              message.destinationName = topic;
+              //console.log(message.payloadString);
+              client.send(message);
+            }
+
+            function Send(ZoneTF,ZoneNum,input){//sends message to broker
+              var i = document.getElementById(input).value;
+              if(ZoneTF){
+                var Zone = document.getElementById("ps"+i).innerHTML;
+                if(Zone=="on"||Zone=="On"){
+                  //console.log("hi");
+                  message = new Paho.MQTT.Message(i+";OFF");
+                  message.destinationName = "home/command/irrigation/zone";
+                  //console.log(message.payloadString);
+                  client.send(message);
+                  //console.log("Sent");
+                }else if(Zone=="off"||Zone=="Off"){
+                  //console.log("off");
+                  message = new Paho.MQTT.Message(i+";ON");
+                  message.destinationName = "home/command/irrigation/zone";
+                  //console.log(message.payloadString);
+                  client.send(message);
+                  //console.log("Sent ON");
+                }
+              }else{
+                message = new Paho.MQTT.Message(input);
+                message.destinationName = "home/irrigation/Zone";
+                client.send(message);
+              }
+            }
+
+            function text_Send(number){
+              var i = number;
+              var Zone = document.getElementById("ps"+i).innerHTML;
+              if(Zone=="on"||Zone=="On"){
+                //console.log("hi");
+                message = new Paho.MQTT.Message(i+";OFF");
+                message.destinationName = "home/command/irrigation/zone";
+                //console.log(message.payloadString);
+                client.send(message);
+                //console.log("Sent");
+              }else if(Zone=="off"||Zone=="Off"){
+                //console.log("off");
+                message = new Paho.MQTT.Message(i+";ON");
+                message.destinationName = "home/command/irrigation/zone";
+                //console.log(message.payloadString);
+                client.send(message);
+                //console.log("Sent ON");
+              }
+            }
+
+        </script>
+
+      </div>
+
+      <div id="Air" class="w3-container city w3-animate-opacity" style="display:none">
+
+        <br>
+        <div class="w3-dropdown-hover w3-light-grey">
+
+          <button class="w3-button">Choose Zone</button>
+          <div class="w3-dropdown-content w3-bar-block w3-card-4">
+            <a href="#Air%Z1" class="w3-bar-item w3-button" onclick="openA('Z1')">Zone 1</a>
+            <a href="#Air%Z2" class="w3-bar-item w3-button" onclick="openA('Z2')">Zone 2</a>
+            <a href="#Air%Z3" class="w3-bar-item w3-button" onclick="openA('Z3')">Zone 3</a>
+          </div>
+
+        </div>
+
+        <div id="Z1" class="town w3-animate-opacity" style="display:block">
+
+          <h3>Zone 1</h3>
+
+          <p>Curent Temp = <span id="CTemp1">Waiting...</span></p>
+          <p>Set Temp = <span id="STemp1">Waiting...</span></p>
+          <p>Fan Set = <span id="Fan1">Waiting...</span></p>
+          <p>State = <span id="S1">Waiting...</span></p>
+          <input id="SetTemp1" type="number" max="90" min="60" placeholder="Set Temp"></input><button onclick="aSend('home/command/climate/zone1/set_temp',document.getElementById('SetTemp1').value)">Set</button>
+          <br><br>
+          <button onclick="aSend('home/command/climate/zone1/set_mode','cool')">Set Cool</button>  <button onclick="aSend('home/command/climate/zone1/set_mode','heat')">Set Heat</button>
+
+        </div>
+
+        <div id="Z2" class="town w3-animate-opacity" style="display:none">
+
+          <h3>Zone 2</h3>
+
+          <p>Curent Temp = <span id="CTemp2">Waiting...</span></p>
+          <p>Set Temp = <span id="STemp2">Waiting...</span></p>
+          <p>Fan Set = <span id="Fan2">Waiting...</span></p>
+          <p>State = <span id="S2">Waiting...</span></p>
+          <input id="SetTemp2" type="number" max="90" min="60" placeholder="Set Temp"></input><button onclick="aSend('home/command/climate/zone2/set_temp',document.getElementById('SetTemp2').value)">Set</button>
+          <br><br>
+          <button onclick="aSend('home/command/climate/zone2/set_mode','cool')">Set Cool</button>  <button onclick="aSend('home/command/climate/zone2/set_mode','heat')">Set Heat</button>
+
+        </div>
+
+        <div id="Z3" class="town w3-animate-opacity" style="display:none">
+
+          <h3>Zone 3</h3>
+
+          <p>Curent Temp = <span id="CTemp3">Waiting...</span></p>
+          <p>Set Temp = <span id="STemp3">Waiting...</span></p>
+          <p>Fan Set = <span id="Fan3">Waiting...</span></p>
+          <p>State = <span id="S3">Waiting...</span></p>
+          <input id="SetTemp3" type="number" max="90" min="60" placeholder="Set Temp"></input><button onclick="aSend('home/command/climate/zone3/set_temp',document.getElementById('SetTemp3').value)">Set</button>
+          <br><br>
+          <button onclick="aSend('home/command/climate/zone3/set_mode','cool')">Set Cool</button>  <button onclick="aSend('home/command/climate/zone3/set_mode','heat')">Set Heat</button>
+
+        </div>
+
+        <script>
+
+          function AirCtl(m, where){
+            var am = m.split("|");
+            switch (where) {
+              case "zone1":
+                document.getElementById("CTemp1").innerHTML = am[0];
+                document.getElementById("STemp1").innerHTML = am[1];
+                document.getElementById("Fan1").innerHTML = am[2];
+                document.getElementById("S1").innerHTML = am[3];
+                break;
+              case "zone2":
+                document.getElementById("CTemp2").innerHTML = am[0];
+                document.getElementById("STemp2").innerHTML = am[1];
+                document.getElementById("Fan2").innerHTML = am[2];
+                document.getElementById("S2").innerHTML = am[3];
+                break;
+              case "zone3":
+                document.getElementById("CTemp3").innerHTML = am[0];
+                document.getElementById("STemp3").innerHTML = am[1];
+                document.getElementById("Fan3").innerHTML = am[2];
+                document.getElementById("S3").innerHTML = am[3];
+                break;
+                default:
+
+            }
+
+          }
+
+          function openA(page){
+            var x;
+            x = document.getElementsByClassName("town");
+            for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+            }
+            document.getElementById(page).style = "display:block";
+          }
+
+          function aSend(dest,mes){
+            message = new Paho.MQTT.Message(mes);
+            message.destinationName = dest;
+            console.log(message);
+            client.send(message);
+          }
+
+          if(document.URL.indexOf("%Z1")>-1){
+            //console.log("YAY");
+            openA("Z1");
+          }else if (document.URL.indexOf("%Z2")>-1) {
+            openA("Z2");
+          }else if (document.URL.indexOf("%Z3")>-1) {
+            openA("Z3");
+          }
+
+        </script>
+
+      </div>
+
+    </div>
+
+  </body>
+
+  <script src="Code/JS/MQTT.js"></script>
+  <script>
+
+    var s = {"ZoneCommand":"home/command/irrigation/zone","ZoneState":"home/state/irrigation/zone","state":"home/irrigation/state","Current":"home/irrigation/current","Pressure":"home/irrigation/current"};
+    var a = {"ip":"192.168.1.46", "port":Number(9001), "client":makeid()};//adjust the "ip" and port to connect to your MQTT server
+
+    client = new Paho.MQTT.Client("192.168.1.46", Number(9001), makeid());
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived
+
+
+    client.connect({onSuccess:onConnect});
+
+    function onConnect() {//called when connection is established
+      // Once a connection has been made, make a subscription and send a message.
+      //console.log("onConnect");
+      client.subscribe("home/#");
+      // var message = new Paho.MQTT.Message("1;On");
+      // message.destinationName = "home/irrigation";
+      // client.send(message);
+    };
+
+    function onConnectionLost(responseObject) {//called when connection is lost
+      client.connect({onSuccess:onConnect});
+      if (responseObject.errorCode !== 0)
+    	console.log("onConnectionLost:"+responseObject.errorMessage);
+    };
+
+    function onMessageArrived(message) {//called when the message arrivs
+      //console.log("MessageArrived:"+message.payloadString +"_"+message.destinationName);
+      //client.disconnect();
+      switch (message.destinationName) {
+        case s.ZoneCommand:
+          //SSZone(message.payloadString);
+          break;
+        case s.ZoneState:
+          SSZone(message.payloadString);
+          break;
+        case s.state:
+          SSPump(message.payloadString,"status");
+          break;
+        case "home/irrigation/pump_current":
+          SSPump(message.payloadString,"current");
+          break;
+        case "home/irrigation/pressure":
+          SSPump(message.payloadString,"pres");
+          break;
+        case "home/state/climate/zone1/all":
+          AirCtl(message.payloadString,"zone1");
+          break;
+        case "home/state/climate/zone2/all":
+          AirCtl(message.payloadString,"zone2");
+          break;
+        case "home/state/climate/zone3/all":
+          AirCtl(message.payloadString,"zone3");
+          break;
+        default:
+          //console.log(message.payloadString);
+          //console.log(message.destinationName);
+      }
+    };
+
+    function makeid() {//this is made to make a randomized id
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.";
+
+      for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+
+    }
+
+  </script>
+  <script>
+
+    function openLink(evt, animName) {//made to switch between the different tabs
+      var i, x, tablinks;
+      x = document.getElementsByClassName("city");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+      }
+      document.getElementById(animName).style.display = "block";
+      evt.currentTarget.className += " w3-red";
+    }
+
+    function openLink2(page){//made to open webpage at start of page
+      // var i, x, tablinks;
+      var x;
+      x = document.getElementsByClassName("city");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      document.getElementById(page).style="display:block";
+      document.getElementById(page+"btn").className = document.getElementById(page+"btn").className + " w3-red";
+    }
+
+    //console.log(document.URL);
+    function open(){//this code opens the webpage when you load the page
+      if(document.URL.indexOf("#SS")>-1){
+        //console.log("YAY");
+        openLink2("SprinklerSystem");
+      }else if (document.URL.indexOf("#Air")>-1) {
+        openLink2("Air");
+      }else if (document.URL.indexOf("#init")>-1) {
+        openLink2("init");
+      }
+    }
+    open();
+
+    function w3_open() {
+      document.getElementById("mySidebar").style.display = "block";
+      //document.getElementById("myOverlay").style.display = "block";
+    }
+
+    function w3_close() {
+      document.getElementById("mySidebar").style.display = "none";
+      //document.getElementById("myOverlay").style.display = "none";
+    }
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent) != true) {
+      location.replace("//192.168.1.46:9001/index.html");
+    }
+
+  </script>
+
+</html>

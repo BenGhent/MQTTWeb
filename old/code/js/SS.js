@@ -1,0 +1,145 @@
+/*=============================================Variables================================================*/
+
+var HomeLog = "home/irrigation/state";
+var LogSS = "home/irrigation/log";
+var SS_dest = "home/irrigation/zone";//SS == Sprinkler System
+var SS_Pres = "home/irrigation/pressure";
+var SS_Current = "home/irrigation/pump_current"
+var Ip = "192.168.1.46";//ip adress of the broker
+var Port = Number(8083);//port of the broker
+var Id = makeid();//writes the ip
+var mes;//makes mes global
+var num = 0;
+var Log;
+
+/*==============================================MQTT====================================*/
+
+client = new Paho.MQTT.Client(Ip, Port, Id);
+
+  // set callback handlers
+  client.onConnectionLost = onConnectionLost;
+  client.onMessageArrived = onMessageArrived;
+
+  // connect the client
+  client.connect({onSuccess:onConnect});
+
+  // called when the client connects
+  function onConnect() {
+
+    // Once a connection has been made, make a subscription and send a message.
+    console.log("Connected as " + makeid());
+    client.subscribe(SS_dest);
+    client.subscribe(LogSS);
+    client.subscribe(HomeLog);
+    client.subscribe(SS_Pres);
+    client.subscribe(SS_Current);
+  }
+
+  // called when the client loses its connection
+  function onConnectionLost(responseObject) {
+    var TimeOut;
+    var Object1 = responseObject.errorCode;
+    if (Object1 !== 0) {
+      console.log("ConnectionLost:"+responseObject.errorMessage);
+      //client = new Paho.MQTT.Client(Ip, Port, Id);
+      client.connect({onSuccess:onConnect});
+      TimeOut++;
+    }
+    if (TimeOut == 10){
+      Object1 = 1;
+    }
+  }
+
+  // called when a message arrives
+  function onMessageArrived(message) {
+    var OnOff;
+    console.log("MessageArrived:"+message.payloadString);
+    mes=message.payloadString;
+    //alert(mes);
+
+
+    var res = mes.split(",");//holds if statement
+      if (res[1] == "on" || res[1] == "On"){
+        OnOff = "On";
+
+      }else if (res[1] == "Off" || res[1] == "Off") {
+        OnOff = "Off";
+      }
+    var Test1 = res.length;
+    if (Test1 >= 2){
+      //alert(Test1);
+      document.getElementById("p"+res[0]).innerHTML = "Zone "+res[0]+" == "+OnOff;
+    }
+    console.log("Topic:     " + message.destinationName);
+    Log = message.destinationName;
+    console.log(Log);
+    if (Log == "home/irrigation/state"){
+      document.getElementById("System").innerHTML = "Pump == "+mes;
+    }
+    if (Log == "home/irrigation/pressure"){
+      document.getElementById('PumpPres').innerHTML = "Presure == "+mes;
+    }
+    if (Log == "home/irrigation/pump_current"){
+      document.getElementById('PumpCurrent').innerHTML = "Current == "+mes;
+    }
+    //if (Log != "home/irrigation/pump_current" && Log != "home/irrigation/pressure"){
+    //	document.getElementById("mic").innerHTML =document.getElementById("mic").textContent+ "," +mes;
+    //	document.getElementById("mic").style.fontSize = "small";
+    //	num = num+1;
+    //	Loop1();
+    //}
+}
+
+/*==========================================Functions=================================*/
+
+makeBigger();
+test();
+
+function SS_On(){//turn on the system
+      var elem = document.getElementById("InputTxt")//gets the input of the textbox
+      if (elem.value < 13 && elem.value >= 1){//detects if the input is in a certan range
+        message = new Paho.MQTT.Message(elem.value + ",On");//wrights a message
+        message.destinationName = SS_dest;//sets the destonation of the message
+        client.send(message);//sends the message to the broker
+      }
+      }
+function SS_Off(){//turn off the system
+      var elem = document.getElementById("InputTxt")//gets the input of the textbox
+      if (elem.value < 13 && elem.value >= 1){//detects if the input is in a certan range
+      message = new Paho.MQTT.Message(elem.value + ",Off");//wrights a message
+      message.destinationName = SS_dest;//sets the destonation of the message
+      client.send(message);//sends the message to the broker
+    }
+      }
+function makeid() {//this is made to make a randomized id
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.";
+
+  for (var i = 0; i < 5; i++)
+  text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+
+}
+function Random1(){//made for a helloworld
+  var elem1 = document.getElementById("InputRandom");
+  message = new Paho.MQTT.Message(elem1.value);//wrights a message
+  message.destinationName = LogSS;//sets the destonation of the message
+  client.send(message);//sends the message to the broker
+}
+function Loop1(){//made to reset the log
+  if (num == 5){
+  document.getElementById("mic").innerHTML = mes;
+  num = 0;
+
+  }
+  }
+function test(){//this is made to make the p1-p12 in the HTML
+  for (nom = 1; nom<=12;nom++){
+    document.getElementById("this").innerHTML = document.getElementById("this").innerHTML + "<p id=p"+nom+" class=myClass>Zone "+nom+" == Off</p>";
+  }
+}
+function makeBigger(){
+  var txt = document.getElementById("InputTxt");
+  txt.style['width-size']='125px';
+}

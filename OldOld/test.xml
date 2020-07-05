@@ -1,0 +1,17 @@
+<home>
+
+  <irrigation>
+
+    <pump><!-- this contains the items for pump -->
+
+      <state/><!-- this is for the state of the pump -->
+      <pres/><!-- this is for the pressure of the pump -->
+      <current/><!-- this is for the water current thrugh the system -->
+
+    </pump>
+
+    <SS/><!-- This is for the sprinkler system -->
+
+  </irrigation>
+
+</home>

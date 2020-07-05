@@ -1,0 +1,104 @@
+{
+    "broker" : {
+        "address" : "192.168.1.46",
+        "port" : "1885"
+    },
+    "start_command" : "home/command/irrigation/zone",
+    "stop_command"  : "home/command/irrigation/zone",
+    "sequences" : [
+        {
+            "sequence_name" : "nighttime",
+            "start_time" : "a_time",
+            "sequence" : [
+                {
+                    "zone" : "18",
+                    "time" : 10
+                },
+                {
+                    "zone" : "17",
+                    "time" : 10
+                },
+                {
+                    "zone" : "16",
+                    "time" : 10
+                },
+                {
+                    "zone" : "15",
+                    "time" : 10
+                },
+                {
+                    "zone" : "14",
+                    "time" : 10
+                },
+                {
+                    "zone" : "13",
+                    "time" : 10
+                },
+                {
+                    "zone" : "12",
+                    "time" : 10
+                },
+                {
+                    "zone" : "11",
+                    "time" : 10
+                },
+                {
+                    "zone" : "10",
+                    "time" : 10
+                },
+                {
+                    "zone" : "9",
+                    "time" : 10
+                },
+                {
+                    "zone" : "8",
+                    "time" : 10
+                },
+                {
+                    "zone" : "7",
+                    "time" : 10
+                },
+                {
+                    "zone" : "6",
+                    "time" : 10
+                },
+                {
+                    "zone" : "5",
+                    "time" : 10
+                },
+                {
+                    "zone" : "4",
+                    "time" : 10
+                },
+                {
+                    "zone" : "3",
+                    "time" : 10
+                },
+                {
+                    "zone" : "2",
+                    "time" : 10
+                },
+                {
+                    "zone" : "1",
+                    "time" : 10
+                }
+            ],
+            "note" : "this is a note about this sequence"
+        },
+        {
+            "sequence_name" : "daytime",
+            "start_time" : "another_time",
+            "sequence" : [
+                {
+                    "zone" : "1",
+                    "time" : 15
+                },
+                {
+                    "zone" : "5",
+                    "time" : 15
+                }
+            ],
+            "note" : "this is a note about this sequence"
+        }
+    ]
+}

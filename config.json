@@ -1,0 +1,348 @@
+{
+    "broker" : {
+        "address" : "192.168.1.46",
+        "port" : "1885"
+    },
+    "topic" : "home",
+    "monitors": [
+        {
+            "name" : "irr_state_on",
+            "subscribe" : 
+                {
+                    "topic" : "home/state/irrigation/zone/#",
+                    "message" : "ON",
+                    "qos" : 2
+                },
+            "response" : 
+                {
+                    "topic" : "home/state/irrigation",
+                    "message" : "ON",
+                    "qos" : 2,
+                    "retained" : true
+                }
+        },
+        {
+            "name" : "irr_state_off",
+            "subscribe" : 
+                {
+                    "topic" : "home/state/irrigation/zone/#",
+                    "message" : "OFF",
+                    "qos" : 2
+                },
+            "response" : 
+                {
+                    "topic" : "home/state/irrigation",
+                    "message" : "OFF",
+                    "qos" : 2,
+                    "retained" : true
+                }
+            
+        }
+    ],
+    "systems" : 
+        {
+            "well_pump" : {
+                "topic" : "well_pump",
+                "state" : {
+                    "pressure" : {
+                        "topic" : "curr_pressure",
+                        "message" : "psi"
+                    },
+                    "current" : {
+                        "topic" : "current",
+                        "message" : "amps"
+                    },
+                    "power" :{
+                        "on": {
+                            "topic" : "power",
+                            "message" : "on"
+                        },
+                        "off": {
+                            "topic" : "power",
+                            "message" : "off"
+                        }
+                    }
+                },
+                "command" : {
+                    
+                }
+            },
+            "irrigation" : {
+                "topic" : "/irrigation",
+                "state" : {
+                    "on" : {
+                        "topic" : "",
+                        "message" : "on",
+                        "qos" : 2,
+                        "retained" : true
+                    },
+                    "off" : {
+                        "topic" : "",
+                        "message" : "off",
+                        "qos" : 2,
+                        "retained" : true
+                    }
+                },
+                "command" : {
+                    "on" : {
+                        "topic" : "",
+                        "message" : "'zone_on:enum';ON;'duration_minutes'",
+                        "enum" : "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
+                        "qos" : 2,
+                        "retained" : false
+                    },
+                    "off" : {
+                        "topic" : "",
+                        "message" : "OFF",
+                        "qos" : 2,
+                        "retained" : false
+                    },
+                    "zone_on" : {
+                        "topic" : "/zone/'enum'",
+                        "enum" : "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
+                        "command" : {
+                            "on" : {
+                            
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    "events" : [
+        {
+            "type" : "start_sequence",
+            "days_of_week" : [
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY",
+                "SATURDAY",
+                "SUNDAY"
+            ],
+            "start_hour" : 20,
+            "start_minute" : 0,
+            "sequence" : "nighttime"
+        },
+        {
+            "type" : "start_sequence",
+            "days_of_week" :[
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY",
+                "SATURDAY",
+                "SUNDAY"
+            ],
+            "start_hour" : 5,
+            "start_minute" : 0,
+            "sequence" : "daytime"
+        }
+    ],
+    "sequences" : [
+        {
+            "sequence_name" : "dummy",
+            "system" : "irrigation",
+            "sequence" : [
+                {
+                    "zone" : "10",
+                    "time" : 1
+                },
+                {
+                    "zone" : "11",
+                    "time" : 1
+                },
+                {
+                    "zone" : "12",
+                    "time" : 1
+                }
+            ] 
+        },        
+        {
+            "sequence_name" : "nighttime",
+            "system" : "irrigation",
+            "sequence" : [
+                {
+                    "zone" : "1",
+                    "time" : 4
+                },
+                {
+                    "zone" : "2",
+                    "time" : 4
+                },
+                {
+                    "zone" : "3",
+                    "time" : 8
+                },
+                {
+                    "zone" : "4",
+                    "time" : 8
+                },
+                {
+                    "zone" : "5",
+                    "time" : 8
+                },
+                {
+                    "zone" : "6",
+                    "time" : 8
+                },
+                {
+                    "zone" : "7",
+                    "time" : 2
+                },
+                {
+                    "zone" : "8",
+                    "time" : 8
+                },
+                {
+                    "zone" : "9",
+                    "time" : 8
+                },
+                {
+                    "zone" : "10",
+                    "time" : 8
+                },
+                {
+                    "zone" : "11",
+                    "time" : 8
+                },
+                {
+                    "zone" : "12",
+                    "time" : 8
+                },
+                {
+                    "zone" : "13",
+                    "time" : 8
+                },
+                {
+                    "zone" : "14",
+                    "time" : 8
+                },
+                {
+                    "zone" : "15",
+                    "time" : 8
+                },
+                {
+                    "zone" : "16",
+                    "time" : 8
+                },
+                {
+                    "zone" : "18",
+                    "time" : 15
+                }
+            ],
+            "note" : "this is a note about this sequence"
+        },{
+            "sequence_name" : "backyard",
+            "system" : "irrigation",
+            "sequence" : [
+                {
+                    "zone" : "11",
+                    "time" : 8
+                },
+                {
+                    "zone" : "12",
+                    "time" : 8
+                },
+                {
+                    "zone" : "13",
+                    "time" : 8
+                },
+                {
+                    "zone" : "14",
+                    "time" : 8
+                },
+                {
+                    "zone" : "15",
+                    "time" : 8
+                },
+                {
+                    "zone" : "16",
+                    "time" : 8
+                },
+                {
+                    "zone" : "18",
+                    "time" : 15
+                }
+            ],
+            "note" : "this is a note about this sequence"
+        },
+        {
+            "sequence_name" : "daytime",
+            "sequence" : [
+                {
+                    "zone" : "1",
+                    "time" : 4
+                },
+                {
+                    "zone" : "2",
+                    "time" : 4
+                },
+                {
+                    "zone" : "3",
+                    "time" : 8
+                },
+                {
+                    "zone" : "4",
+                    "time" : 8
+                },
+                {
+                    "zone" : "5",
+                    "time" : 8
+                },
+                {
+                    "zone" : "6",
+                    "time" : 8
+                },
+                {
+                    "zone" : "7",
+                    "time" : 8
+                },
+                {
+                    "zone" : "8",
+                    "time" : 8
+                },
+                {
+                    "zone" : "9",
+                    "time" : 8
+                },
+                {
+                    "zone" : "10",
+                    "time" : 8
+                },
+                {
+                    "zone" : "11",
+                    "time" : 8
+                },
+                {
+                    "zone" : "12",
+                    "time" : 8
+                },
+                {
+                    "zone" : "13",
+                    "time" : 8
+                },
+                {
+                    "zone" : "14",
+                    "time" : 8
+                },
+                {
+                    "zone" : "15",
+                    "time" : 8
+                },
+                {
+                    "zone" : "16",
+                    "time" : 8
+                },
+                {
+                    "zone" : "18",
+                    "time" : 8
+                }
+            
+            ],
+            "note" : "this is a note about this sequence"
+        }
+    ]
+}

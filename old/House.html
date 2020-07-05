@@ -1,0 +1,327 @@
+<!DOCTYPEhtml>
+<html>
+	<head>
+			<title> House </title>
+			<p id="o"></p>
+	</head>
+			<script src="MQTT.js"></script>
+			<script src="house/processing.min.js"> </script>
+			<script type = "application/processing" data-processing-target="MyGameCanvas">
+
+			/*======================================
+			=================MQTT===================
+			======================================*/
+
+
+			/*======================================
+			==============Variables=================
+			======================================*//*
+			//master
+				var master_light = "home/lights/#"
+				var master_light_bath_sinks = "home/lights/master/bath/sink";//lights above the sinks in the master bathroom
+				var master_light_bath_shower = "hone/lights/master/bath/shower";//the light in the master bathroom shower
+				var master_light_bath_bath = "home/lights/master/bath/bathtub";//light in the master bathroom bathtub
+				var master_light_closit = "home/lights/master/closit";//lights in the master closit
+				var master_light_fan = "home/lights/master/fanLight";//the light in the main light
+				var master_light_desk = "home/lights/master/desk";//light over the desk in master bedroom
+				var master_light_craftRoom = "home/lights/master/craft";//lights in master craft room
+				//fans
+				var master_fan_main = "home/fan/master/main";//main fan in master bedroom
+				var master_fan_craft = "home/fan/master/craft";//fan in craft room
+			//foyer
+				var foyer_lights_left = "home/lights/foyer/left";//based on the blueprints lights in the foyer on the left hand side
+				var foyer_lights_right = "home/lights/foyer/right";//lights on right sine
+			//kitchen
+
+
+			//the main variable
+			var Ip = "192.168.1.46";//ip adress of the broker
+			var Port = Number(8083);//port of the broker
+			var Id = makeid();//writes the ip
+			var mes;//makes mes global
+			var num = 0;
+			var Log;
+			var mes_des;
+
+			client = new Paho.MQTT.Client(Ip, Port, Id);
+
+				// set callback handlers
+				client.onConnectionLost = onConnectionLost;
+				client.onMessageArrived = onMessageArrived;
+
+				// connect the client
+				client.connect({onSuccess:onConnect});
+
+				// called when the client connects
+				function onConnect() {
+
+				  // Once a connection has been made, make a subscription and send a message.
+				  console.log("Connected as " + makeid());
+				  client.subscribe(master_light);
+					//client.subscribe(master_light_bath_sinks);
+				}
+
+				// called when the client loses its connection
+				function onConnectionLost(responseObject) {
+					var TimeOut;
+					var Object1 = responseObject.errorCode;
+				  if (Object1 !== 0) {
+				    console.log("ConnectionLost:"+responseObject.errorMessage);
+						//client = new Paho.MQTT.Client(Ip, Port, Id);
+						client.connect({onSuccess:onConnect});
+						TimeOut++;
+				  }
+					if (TimeOut == 10){
+						Object1 = 1;
+					}
+				}
+
+				// called when a message arrives
+				function onMessageArrived(message) {
+					var OnOff;
+					console.log("MessageArrived:"+message.payloadString);
+					mes=message;
+					//mes_des=message.destinationName;
+					//alert(mes);
+					change();
+
+
+					var res = mes.split(",");//holds if statement
+
+					var Test1 = res.length;
+					// if (Test1 >= 2){
+					// 	//alert(Test1);
+					// 	document.getElementById("p"+res[0]).innerHTML = "Zone "+res[0]+" == "+OnOff;
+					// }
+					// console.log("Topic:     " + message.destinationName);
+					// Log = message.destinationName;
+					// console.log(Log);
+					// if (Log == "home/irrigation/state"){
+					// 	document.getElementById("System").innerHTML = "Pump == "+mes;
+					// }
+					// if (Log == "home/irrigation/pressure"){
+					// 	document.getElementById('PumpPres').innerHTML = "Presure == "+mes;
+					// }
+					// if (Log == "home/irrigation/pump_current"){
+					// 	document.getElementById('PumpCurrent').innerHTML = "Current == "+mes;
+					// }
+					//if (Log != "home/irrigation/pump_current" && Log != "home/irrigation/pressure"){
+					//	document.getElementById("mic").innerHTML =document.getElementById("mic").textContent+ "," +mes;
+					//	document.getElementById("mic").style.fontSize = "small";
+					//	num = num+1;
+					//	Loop1();
+					//}
+			}
+			function makeid() {//this is made to make a randomized id
+				var text = "";
+				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.";
+
+				for (var i = 0; i < 5; i++)
+				text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+				return text;
+
+			}
+
+
+			/*======================================
+			==============Variables=================
+			======================================*/
+
+				var Dx = 1356;//size of the
+				var Dy = 675;
+				var s = 10; //size of the lights
+				var k;//kitchen
+				var Lr;//living room
+				var Sr;//Sam room or room 1
+				var Lr;//Lucas room or room 2
+				var Dr;//dinning room
+				var w;//washer/dryer
+				//foyer
+				var fl;//left side
+				var fr;//right side
+				var f_f;//fan
+				//master
+				var m;//master
+				var m_fan;//master fan
+				var md;//master desk
+				//Master bath
+				var mb;//the whole place
+				var mb_m;
+				var mb_s;
+				//master closit
+				var mc;
+				//master bath
+				var mb_b;
+				//Craft Room
+				var Cf;
+				var Cf_fan;
+
+
+			/*======================================
+			=================MQTT===================
+			======================================*/
+
+			function change(){
+				switch (mes.destinationName){
+					case master_light_bath_sinks:
+						if(mb_m==true){
+							mb_m=false;
+							break;
+						}else{
+							mb_m=true;
+							break;
+						}
+					case master_light_bath_bath:
+						if(mb_b==true){
+							mb_b=false;
+							break;
+						}else{
+							mb_b=true;
+							break;
+						}
+					case master_light_bath_shower:
+						if(mb_s==true){
+							mb_s=false;
+							break;
+						}else{
+							mb_s=true;
+							break;
+						}
+					case master_light_closit:
+						if(mc==true){
+							mc=false;
+							break;
+						}else{
+							mc=true;
+							break;
+						}
+					//case
+
+
+
+				}
+			}
+
+			/*======================================
+			===============Objects==================
+			======================================*/
+
+			//lights
+			function light(x,y,o){
+				pushMatrix();
+					noStroke();
+					if(o==true){
+						fill(255,255,0);
+					}else{
+						fill(0)
+					}
+					ellipse(x,y,s,s);
+				popMatrix();
+			}
+			//fans
+			function fan(x,y,o){
+				pushMatrix();
+					noStroke();
+					if(o==true){
+						fill(0,0,255);
+					}else{
+						fill(0)
+					}
+					ellipse(x,y,20,20);
+				popMatrix();
+			}
+
+			function master_bath(){//this function is for the master bathroom
+				//main lights
+				light(208,439,mb_m);
+				light(223,349,mb_m);
+				//shower
+				light(83,430,mb_s);
+				//bath
+				light(59,379,mb_b);
+				//closit
+				light(74,297,mc);
+				light(168,274,mc);
+
+			}
+
+			function master(){
+				//fan
+				fan(340,321,m_fan);
+				//main light
+				light(340,321,m);
+				//dest light
+				light(338,251,md);
+			}
+
+			function craft_Room(){
+				//fan
+				fan(320,456,Cf_fan);
+				//main
+				light(320,456,Cf);
+			}
+
+			function foyer(){
+				//left
+				light(487,419,fl);
+				light(487,491,fl);
+				//right
+				light(686,419,fr);
+				light(686,491,fr);
+				//fan
+				fan(585,447,f_f);
+			}
+
+			/*======================================
+			================House===================
+			======================================*/
+
+			function house(){
+				master_bath();
+				master();
+				craft_Room();
+				foyer();
+			}
+
+			/*======================================
+			==============Main Code=================
+			======================================*/
+
+      void setup(){
+  			size(Dx,Dy);
+  			document.getElementById('MyGameCanvas').focus();
+			 	b = loadImage("house/Scan Dec 12, 2018.pdf_Page_1.jpg");
+		  }
+
+      void draw(){
+				background(255);
+				image(b, 0, 0,Dx,Dy);
+				document.getElementById("o").innerHTML = mouseX+", "+mouseY;
+				house();
+      }
+
+			void mouseClicked(){
+				var x=mouseX;
+				var y=mouseY;
+
+				if(x<=229 && x>= 20 && y >= 249 && y <= 455){
+					if(mb_m==true){
+						//mb_m=false;
+						message = new Paho.MQTT.Message("off");//wrights a message
+						message.destinationName = "home/lights/master/bath";//sets the destonation of the message
+						client.send(message);//sends the message to the broker
+					}else{
+						//mb_m=true;
+						message = new Paho.MQTT.Message("on");//wrights a message
+						message.destinationName = master_light_bath_sinks;//sets the destonation of the message
+						client.send(message);//sends the message to the broker
+					}
+				}
+}
+      </script>
+	  <body>
+			<canvas id='MyGameCanvas'></canvas>
+		</body>
+
+</html>

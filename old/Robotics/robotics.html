@@ -1,0 +1,78 @@
+<!DOCTYPEhtml>
+<html>
+
+  <head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="code/CSS/main.css">
+    <link rel="stylesheet" type="text/css" href="code/CSS/W3.css">
+    <title>Ahs Robotics</title>
+
+  </head>
+
+  <body>
+
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-bar-block w3-black w3-card" style="width:130px">
+      <h5 class="w3-bar-item">Teams</h5>
+      <a class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Home')" href="#home">Home</a>
+      <a class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Overload')" href="#overload">Overload</a>
+      <a class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Circuit Breakers')" href="#CircuitBreakers">Circuit Breakers</a>
+      <a class="w3-bar-item w3-button tablink" onclick="openLink(event, 'High Voltage')" href="#HighVoltage">High Voltage</a>
+
+      <!-- this button is for the contact us portion -->
+      <a class="w3-bar-item w3-button tablink" onclick="openLink(event, 'ContactUs')" href="#ContactUs">Contact Us</a>
+    </div>
+    <!-- End of sidebar -->
+    <!-- everything for the main screen -->
+    <div style="margin-left:130px">
+      <!-- Home screen
+      #   Still need to add location
+      -->
+      <div id="Home" class="w3-container city w3-animate-opacity" style="display:block">
+        <div class="w3-padding-24px w3-display-container">
+          <img class="mySlides w3-animate-fading" src="Images/t4.jpg" style="width:50%; height: 300px; background-color: #ff4500; transform: rotate(90deg);">
+          <img class="mySlides w3-animate-fading" src="Images/t3.jpg" style="width:50%; height: 300px; background-color: #ff4500; transform: rotate(90deg);">
+          <img class="mySlides w3-animate-fading" src="Images/t1.png" style="width:50%; height: 300px; background-color: #ff4500;">
+          <img class="mySlides w3-animate-fading" src="Images/t2.png" style="width:50%; height: 300px; background-color: #ff4500;">
+        </div>
+        <h2>Aledo High School Robotics Club</h2>
+        <p>Aledo Robotics team 6566 was founded in 2012 by a former FLL member. The team experienced a great inaugural season with a PTC Design award for our robot’s scissor lift. The team advanced from our Qualifying Meet to the Regional Championship. Almost all of our team members graduated in 2013, so we experienced a rebuilding year that fall. Our team competed at the Qualifying Meet but did not advance. In 2014, the number of students interested in the team increased so dramatically we formed a second team at our school – FTC 9161. This team’s robot performed well in the qualifying rounds and our alliance of 6566 and 9161 were in 2nd place entering the elimination rounds. Our team continues to grow in knowledge and experience and we expect to have a great season in 2015-2016! This Tradition of fun and excellence was continued on the 2016-2017 and 2017-2018 seasons. During the 2017-18 season team 9161 Overload got the Inspire award at the first qualifier we attended and advanced to the regional competition. There we performed well, but had many technical issues, so we didn’t do as well as the team had hope. We hope to continue this tradition of excellence within our team, and in all three teams that make up the Aledo Robotics Club, in our competition, gracious professionalism, and coopertition this year.
+        </p>
+      </div>
+      <!-- Overload's team page -->
+      <div id="Overload" class="w3-container city w3-animate-opacity" style="display:none">
+        <h2>Overload 9161</h2>
+        <p>As a team and as individuals they do many things to bring FIRST and robotics in general unto the community because they think sharing robotics and technology is very important. The things that they do in our community include mentoring two FLL teams, judging at FLL competitions, open sourcing their 3D designs, and doing a robotics summer camp.</p>
+        <p> They assist  </p>
+      </div>
+      <!-- Circuit Breakers team page -->
+      <div id="Circuit Breakers" class="w3-container city w3-animate-opacity" style="display:none">
+        <h2>Circuit Breakers</h2>
+        <p></p>
+      </div>
+      <!-- High Voltage's team page -->
+      <div id="High Voltage" class="w3-container city w3-animate-opacity" style="display:none">
+        <h2>High Voltage</h2>
+        <p></p>
+      </div>
+      <!-- Contact us page -->
+      <div id="ContactUs" class="w3-container city w3-animate-opacity" style="display:none">
+        <h2>Contact Us</h2>
+        <p>We are avaiable at all times for support and any help that you may be able to give us.</p>
+      </div>
+    </div>
+    <!-- Footer
+    #   This contains all of the necisay items for a proper footer
+    #   This allows us to have information displayed at every part of the pages
+    -->
+    <footer class="w3-container w3-black footer">
+      <h6>Random Info</h6>
+      <h6>Contact us on google</h6>
+    </footer>
+
+  </body>
+
+  <script src="code/JS/main.js"></script>
+
+</html>

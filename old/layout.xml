@@ -1,0 +1,20 @@
+<xml>
+
+  <MQTT>
+
+    <SS>
+
+      <pump>
+        <pressure>home/irrigation/pressure</pressure>
+        <current>home/irrigation/pump_current</current>
+        <state>home/irrigation/state</state>
+      </pump>
+      <areas>
+        <front>
+
+
+    </SS>
+
+  </MQTT>
+
+</xml>
