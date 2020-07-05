@@ -147,7 +147,7 @@
             "system" : "irrigation",
             "sequence" : [
                 {
-                    "zone" : "10",
+                    "zone" : "8",
                     "time" : 1
                 },
                 {
@@ -268,8 +268,7 @@
                 }
             ],
             "note" : "this is a note about this sequence"
-        },
-        {
+        },{
             "sequence_name" : "daytime",
             "sequence" : [
                 {
