@@ -60,13 +60,13 @@ THis is created so that people can monitor their MQTT server and do it in a sing
           <div id="SSSInput">
 
             <h4>Sprinkler System</h4>
-            <button id="Pause" onclick="Send1('pause', 'home/command/irrigation')" class="w3-button w3-small">Pause</button> 
+            <button id="Pause" onclick="Send1('pause', 'home/command/irrigation')" class="w3-button w3-small">Pause</button>
 	    <button id="resume" onclick="Send1('resume', 'home/command/irrigation')" class="w3-button w3-small">Resume</button>
 	    <button id="cancel" onclick="Send1('cancel', 'home/command/irrigation')" class="w3-button w3-small">Cancel</button>
 	    <br>
             <br>
-            <input type="number" id="NInputTxt" min="1" max="16" name="test" value="1" class="w3-black"></input> 
-	    <button id="SSZoneBtn" name="Btn" onclick="Send(true,'23456','NInputTxt')" class="w3-button w3-small">Send</button> 
+            <input type="number" id="NInputTxt" min="1" max="16" name="test" value="1" class="w3-black"></input>
+	    <button id="SSZoneBtn" name="Btn" onclick="Send(true,'23456','NInputTxt')" class="w3-button w3-small">Send</button>
 	    <button id="SSZoneBtn" name="Btn" onclick="Send1('AllOff', 'home/command/irrigation/zone/1')" class="w3-button w3-small">ALLOFF</button>
 
           </div>
@@ -81,29 +81,6 @@ THis is created so that people can monitor their MQTT server and do it in a sing
 
         <script id="SSs">
 
-          var xmlhttp = new XMLHttpRequest();
-          var myObj;// = JSON.parse(this.responseText);
-          var getZoneTimes;
-          xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              myObj = JSON.parse(this.responseText);
-
-              getZoneTimes = function(zone){
-                for(var i = 0; i<=myObj.sequences[0].sequence.length; i++){
-                  if(myObj.sequences[0].sequence[i].zone == zone){
-                    return myObj.sequences[0].sequence[i].time;
-                  }
-                }
-                return 0;
-              }
-
-
-
-            }
-          }
-          xmlhttp.open("GET", "Code/JSON/config.json", true);
-          xmlhttp.send();
-
           function init(num){
             for(i=1;i<=num;i++){
               document.getElementById("T").innerHTML = document.getElementById("T").innerHTML +"<p id='p'"+i+" onclick='text_Send("+i+")' style='width:165px'>Zone "+i+":<span id=ps"+i+" style=color:green>Off</span></p>";
@@ -116,12 +93,12 @@ THis is created so that people can monitor their MQTT server and do it in a sing
           //init(18);
 
           function SSZone(message,topic){//
-		console.log("topic: " + topic);
+	          console.log("topic: " + topic);
             var zn = topic.split("/");
-	    	console.log("zone number: " + zn[4]);
-		console.log("message: " + message);
+    	      console.log("zone number: " + zn[4]);
+	          console.log("message: " + message);
             // home/state/irrigation/zone/1
-	    if(message=="on"|message=="ON"){
+           if(message=="on"|message=="ON"){
               document.getElementById("ps"+zn[4]).innerHTML = "On";
               document.getElementById("ps"+zn[4]).style = "color:red";
             }else if (message=="off"||message=="OFF") {
@@ -364,7 +341,7 @@ THis is created so that people can monitor their MQTT server and do it in a sing
     function onMessageArrived(message) {//called when the message arrivs
       //console.log("MessageArrived:"+message.payloadString +"_"+message.destinationName);
       //client.disconnect();
-      
+
 	if(message.destinationName.includes("home/state/irrigation/zone/")){
 		SSZone(message.payloadString,message.destinationName);
 	}
@@ -464,9 +441,6 @@ THis is created so that people can monitor their MQTT server and do it in a sing
     }
     open();
 
-    // if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-    //   location.replace("//192.168.1.46:9001/Mobile.html");
-    // }
 
   </script>
 

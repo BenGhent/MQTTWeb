@@ -119,7 +119,7 @@
                 "THURSDAY",
                 "FRIDAY",
                 "SATURDAY",
-                "SUNDAY"
+		"SUNDAY"
             ],
             "start_hour" : 20,
             "start_minute" : 0,
@@ -142,21 +142,74 @@
         }
     ],
     "sequences" : [
-        {
+	{
+		"sequence_name" : "pool",
+		"system" : "irrigation",
+		"sequence" : [
+			{
+				"zone" : "18",
+				"time" : 30 
+			}
+		]
+	
+	},
+	{
+		"sequence_name" : "front_yard",
+		"system" : "irrigation",
+		"sequence" : [
+                	{
+                    		"zone" : "1",
+                    		"time" : 5
+                	},
+                	{
+                    		"zone" : "2",
+                    		"time" : 5
+                	},
+			{
+				"zone" : "3",
+				"time" : 8 
+			},
+                	{
+                    		"zone" : "4",
+                    		"time" : 5
+                	},
+                	{
+                    		"zone" : "5",
+                    		"time" : 5
+                	},
+			{
+				"zone" : "6",
+				"time" : 12 
+			},
+			{
+				"zone" : "7",
+				"time" : 12 
+			},
+			{
+				"zone" : "8",
+				"time" : 15 
+			},
+			{
+				"zone" : "9",
+				"time" : 8
+			}
+		]
+	},
+	{
             "sequence_name" : "dummy",
             "system" : "irrigation",
             "sequence" : [
                 {
-                    "zone" : "8",
-                    "time" : 1
+                    "zone" : "18",
+                    "time" : 20
                 },
                 {
-                    "zone" : "11",
-                    "time" : 1
+                    "zone" : "18",
+                    "time" : 20
                 },
                 {
-                    "zone" : "12",
-                    "time" : 1
+                    "zone" : "18",
+                    "time" : 20
                 }
             ] 
         },        
@@ -174,7 +227,7 @@
                 },
                 {
                     "zone" : "3",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "4",
@@ -186,47 +239,47 @@
                 },
                 {
                     "zone" : "6",
-                    "time" : 8
+                    "time" : 12
                 },
                 {
                     "zone" : "7",
-                    "time" : 2
+                    "time" : 12
                 },
                 {
                     "zone" : "8",
-                    "time" : 8
+                    "time" : 15
                 },
                 {
                     "zone" : "9",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "10",
-                    "time" : 8
+                    "time" : 6
                 },
                 {
                     "zone" : "11",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "12",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "13",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "14",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "15",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "16",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "18",
@@ -234,7 +287,8 @@
                 }
             ],
             "note" : "this is a note about this sequence"
-        },{
+        },
+	{
             "sequence_name" : "backyard",
             "system" : "irrigation",
             "sequence" : [
@@ -293,51 +347,51 @@
                 },
                 {
                     "zone" : "6",
-                    "time" : 8
+                    "time" : 12
                 },
                 {
                     "zone" : "7",
-                    "time" : 8
+                    "time" : 12
                 },
                 {
                     "zone" : "8",
-                    "time" : 8
+                    "time" : 15
                 },
                 {
                     "zone" : "9",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "10",
-                    "time" : 8
+                    "time" : 6
                 },
                 {
                     "zone" : "11",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "12",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "13",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "14",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "15",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "16",
-                    "time" : 8
+                    "time" : 10
                 },
                 {
                     "zone" : "18",
-                    "time" : 8
+                    "time" : 12
                 }
             
             ],
