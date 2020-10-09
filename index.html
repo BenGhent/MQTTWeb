@@ -82,13 +82,13 @@ THis is created so that people can monitor their MQTT server and do it in a sing
         <script id="SSs">
 
           function init(num){
-            for(i=1;i<=num;i++){
+            for(i=0;i<=num;i++){
               document.getElementById("T").innerHTML = document.getElementById("T").innerHTML +"<p id='p'"+i+" onclick='text_Send("+i+")' style='width:165px'>Zone "+i+":<span id=ps"+i+" style=color:green>Off</span></p>";
               //document.getElementById("ps_t"+i).innerHTML = getZoneTimes(i);
             }
           }
 
-          init(19);
+          init(20);//starts at zone 0 -jg 20201009
 
           //init(18);
 
