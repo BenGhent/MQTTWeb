@@ -143,7 +143,7 @@
     ],
     "sequences" : [
 	{
-		"sequence_name" : "pool",
+		"sequence_name" : "pool30",
 		"system" : "irrigation",
 		"sequence" : [
 			{
@@ -283,7 +283,7 @@
                 },
                 {
                     "zone" : "18",
-                    "time" : 15
+                    "time" : 0
                 }
             ],
             "note" : "this is a note about this sequence"
