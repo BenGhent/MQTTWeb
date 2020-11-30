@@ -123,26 +123,23 @@
             ],
             "start_hour" : 20,
             "start_minute" : 0,
-            "sequence" : "nighttime"
-        },
-        {
-            "type" : "start_sequence",
-            "days_of_week" :[
-                "MONDAY",
-                "TUESDAY",
-                "WEDNESDAY",
-                "THURSDAY",
-                "FRIDAY",
-                "SATURDAY",
-                "SUNDAY"
-            ],
-            "start_hour" : 5,
-            "start_minute" : 0,
-            "sequence" : "daytime"
+            "sequence" : "pool10"
         }
     ],
     "sequences" : [
-	{
+	    {
+		    "sequence_name" : "pool10",
+		    "system" : "irrigation",
+		    "sequence" : 
+		    	[
+				{
+					"zone" : "18",
+					"time" : 10
+				}
+			]
+
+	    },
+	    {
 		"sequence_name" : "pool30",
 		"system" : "irrigation",
 		"sequence" : [
